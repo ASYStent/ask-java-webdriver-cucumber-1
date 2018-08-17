@@ -22,13 +22,7 @@ Feature: Multiple choice: Points
     And  I choose correct answer. Option 1
 
 
-  @ACA324-1
-  Scenario: Slider min points
 
-    When I move the slider to minimum
-    And  I save Quiz
-    And I wait for 2 sec
-    Then element with xpath "//span[contains(text(),'Create New Quiz')]" should be present
 
   @ACA324-2
   Scenario: Slider max points
