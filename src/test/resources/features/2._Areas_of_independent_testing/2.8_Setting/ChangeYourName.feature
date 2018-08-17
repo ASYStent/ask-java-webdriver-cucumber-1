@@ -44,9 +44,10 @@ Feature: 2.8.1 Change your name
     When I click on element with xpath "//h5[contains(text(),'Setting')]" 2
     And I click on element with xpath "//span[contains(text(),'Change Your Name')]" 2
     And I clear element with xpath "//input[@placeholder='New name']"
+    And I wait for 3 sec
     And I click on element with xpath "(//button[@aria-label='Close dialog'])[2]"
     And I wait for 3 sec
-    Then I verify that text with xpath "//*[contains(text(),'Should contain only first and last name')]" is displayed
+    Then I verify that text with xpath "//*[contains(text(),'This field is required')]" is displayed
 
   @Area_of_independent_testing
   Scenario: Input max 70 characters
