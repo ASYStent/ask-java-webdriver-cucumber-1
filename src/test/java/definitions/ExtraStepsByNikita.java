@@ -7,6 +7,8 @@ import cucumber.api.java.en.When;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.StaleElementReferenceException;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -91,6 +93,13 @@ public class ExtraStepsByNikita {
             }
             catch(Exception e){}
         }
+    }
+
+    @When("^I move to x=(-?\\d+) and y=(-?\\d+) on the slider with xpath \"([^\"]*)\" 2$")
+    public void iMoveTheSlider(int x, int y, String xpath) {
+        WebElement slider = getDriver().findElement(By.xpath(xpath));
+        Actions move = new Actions(getDriver());
+        move.dragAndDropBy(slider, x, y).build().perform();
     }
 
     @And("^I input value with length (-?\\d+) on field with xpath \"([^\"]*)\" which include digits alphabet and special characters$")
@@ -229,17 +238,17 @@ public class ExtraStepsByNikita {
 
     @When("^login as teacher username \"([^\"]*)\" password \"([^\"]*)\"$")
     public void loginAsTeacherUsernamePassword(String username, String password) throws Exception {
-         try {
-             st.iOpenUrl("http://local.school.portnov.com:4520/#/login");
-             st.iTypeIntoElementWithXpath(username, "//input[@formcontrolname='email']");
-             st.iTypeIntoElementWithXpath(password, "//input[@formcontrolname='password']");
-             st.iClickOnElementWithXpath("//button[@type='submit']");
-             st.iWaitForSec(3);
-             getDriver().findElement(By.xpath("//h3[text()='Nikita Dovhych']")).isDisplayed();
-            }
-         catch (Exception e) {
-             restorePassword(username, password);
-         }
+        try {
+            st.iOpenUrl("http://local.school.portnov.com:4520/#/login");
+            st.iTypeIntoElementWithXpath(username, "//input[@formcontrolname='email']");
+            st.iTypeIntoElementWithXpath(password, "//input[@formcontrolname='password']");
+            st.iClickOnElementWithXpath("//button[@type='submit']");
+            st.iWaitForSec(3);
+            getDriver().findElement(By.xpath("//h3[text()='Nikita Dovhych']")).isDisplayed();
+        }
+        catch (Exception e) {
+            restorePassword(username, password);
+        }
     }
 
     private void restorePassword(String username, String password) throws Exception {
@@ -285,16 +294,15 @@ public class ExtraStepsByNikita {
     public void cleanAssigments() throws Exception{
         getDriver().findElement(By.xpath("//h5[contains(text(),'Assignments')]")).click();
         st.iWaitForSec(3);
-        boolean staleElement = getDriver().findElement(By.xpath("(//*[contains(text(),'cucumber do not delete')])[1]")).isDisplayed();;
-        while(staleElement){
+        boolean staleElement = getDriver().findElement(By.xpath("(//*[contains(text(),'My Quizze')])[1]")).isDisplayed();
+        while(staleElement == false){
             try{
-                getDriver().findElement(By.xpath("(//*[contains(text(),'cucumber do not delete')])[1]")).isDisplayed();
-                getDriver().findElement(By.xpath("//*[contains(text(),'cucumber do not delete')]/..//button")).click();
+                getDriver().findElement(By.xpath("(//*[contains(text(),'My Quizze')])[1]/..//button")).click();
                 getDriver().findElement(By.xpath("//*[contains(text(),'Delete')]")).click();
                 getDriver().findElement(By.xpath("//*[@*='Close dialog'][2]")).click();
-                st.iWaitForSec(2);
+                staleElement = getDriver().findElement(By.xpath("(//*[contains(text(),'My Quizze')])[1]")).isDisplayed();                st.iWaitForSec(2);
             } catch(StaleElementReferenceException e){
-                staleElement = true;
+                throw new PendingException();
             }
         }
         System.out.println(staleElement);
